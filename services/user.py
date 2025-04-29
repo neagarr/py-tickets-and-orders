@@ -4,12 +4,14 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        *args
+        *args,
+        **kwargs
 ) -> User:
     return User.objects.create_user(
         username=username,
         password=password,
-        *args
+        *args,
+        **kwargs
     )
 
 def get_user(user_id: int) -> User:

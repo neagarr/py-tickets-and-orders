@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint
 
 import settings
 
@@ -91,13 +90,10 @@ class Ticket(models.Model):
             raise ValidationError(
                 {'seat': [f"seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})", ]}
             )
-        
-    def full_clean(self):
-        self.clean()
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         self.full_clean()
+        super().save(*args, **kwargs)
 
 
     def __str__(self) -> str:
@@ -106,7 +102,7 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=["row", "seat", "movie_session"],
                 name="row_seat_session_constraint"
             ),
