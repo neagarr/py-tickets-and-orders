@@ -67,7 +67,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        datetime_str = str(self.created_at)[:-7]
+        datetime_str = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         return datetime_str
 
     class Meta:

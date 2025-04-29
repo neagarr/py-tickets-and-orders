@@ -32,3 +32,12 @@ def create_order(
                 row=ticket["row"],
                 seat=ticket.get("seat"),
             )
+
+def get_orders(
+        username: str=None
+) -> list:
+
+    if username:
+        return Order.objects.filter(user_id=User.objects.get(username=username).id).all()
+
+    return Order.objects.all()
