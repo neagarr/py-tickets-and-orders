@@ -11,7 +11,9 @@ def create_order(
 
     with transaction.atomic():
 
-        order = Order.objects.create(user_id=User.objects.get(username=username).id)
+        order = Order.objects.create(
+            user_id=User.objects.get(username=username).id
+        )
 
         if date:
             not_str_date = datetime.strptime(date, "%Y-%m-%d %H:%M")
@@ -20,7 +22,9 @@ def create_order(
 
         for ticket in tickets:
 
-            movie_session = MovieSession.objects.get(id=ticket["movie_session"])
+            movie_session = MovieSession.objects.get(
+                id=ticket["movie_session"]
+            )
 
             Ticket.objects.create(
                 movie_session=movie_session,
