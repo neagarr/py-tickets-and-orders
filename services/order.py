@@ -1,4 +1,7 @@
 from datetime import datetime
+
+from django.contrib.auth import get_user_model
+
 from db.models import Order, Ticket, User, MovieSession
 from django.db import transaction
 
@@ -38,7 +41,7 @@ def get_orders(username: str = None) -> list:
 
     if username:
         return Order.objects.filter(
-            user_id=User.objects.get(username=username).id
+            user_id=get_user_model().objects.get(username=username).id
         ).all()
 
     return Order.objects.all()

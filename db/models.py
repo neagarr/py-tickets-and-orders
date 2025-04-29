@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -90,7 +90,7 @@ class Ticket(models.Model):
 
     def clean(self) -> None:
 
-        if self.row > self.movie_session.cinema_hall.rows:
+        if 0 < self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {
                     "row": [
@@ -100,7 +100,7 @@ class Ticket(models.Model):
                 }
             )
 
-        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+        if 0 < self.seat > self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
                     "seat": [
