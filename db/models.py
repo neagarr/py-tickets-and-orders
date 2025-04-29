@@ -27,9 +27,7 @@ class Movie(models.Model):
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     class Meta:
-        indexes = [
-            models.Index(fields=["title"])
-        ]
+        indexes = [models.Index(fields=["title"])]
 
     def __str__(self) -> str:
         return self.title
@@ -74,41 +72,50 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE, related_name="tickets")
+    movie_session = models.ForeignKey(
+        MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def clean(self):
+    def clean(self) -> None:
 
         if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
-                {'row': [f"row number must be in available range: (1, rows): (1, {self.movie_session.cinema_hall.rows})", ]}
+                {
+                    "row": [
+                        f"row number must be in available range: (1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})",
+                    ]
+                }
             )
 
         if self.seat > self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
-                {'seat': [f"seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})", ]}
+                {
+                    "seat": [
+                        f"seat number must be in available range: "
+                        f"(1, seats_in_row): (1, "
+                        f"{self.movie_session.cinema_hall.seats_in_row})",
+                    ]
+                }
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
-
     def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
-
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=["row", "seat", "movie_session"],
-                name="row_seat_session_constraint"
+                name="row_seat_session_constraint",
             ),
         ]
-
-
 
 
 class User(AbstractUser):
